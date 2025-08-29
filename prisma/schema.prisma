@@ -1,0 +1,92 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum Status {
+    ABERTO
+    EM_ATENDIMENTO
+    FECHADO
+}
+
+enum Prioridade {
+    BAIXA
+    MEDIA
+    ALTA
+    CRITICA
+}
+
+model Funcionario {
+    id        String   @id @default(uuid()) @db.Uuid
+    nome      String
+    email     String   @unique
+    senha     String
+    cargo     String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    tickets   Ticket[]
+
+    @@map("funcionarios")
+}
+
+model Ticket {
+    id              Int         @id @default(autoincrement())
+    imagem          String?
+    descricao       String
+    data_abertura   DateTime
+    status          Status      @default(ABERTO)
+    prioridade      Prioridade  @default(MEDIA)
+    resposta        String?
+    data_fechamento DateTime?
+    createdAt       DateTime    @default(now())
+    updatedAt       DateTime    @updatedAt
+    funcionarioId   String      @db.Uuid
+    servicoId       Int
+    adminId         String      @db.Uuid
+    funcionario     Funcionario @relation(fields: [funcionarioId], references: [id])
+    servico         Servico     @relation(fields: [servicoId], references: [id])
+    admin           Admin       @relation(fields: [adminId], references: [id])
+
+    @@map("tickets")
+}
+
+model Admin {
+    id      String   @id @default(uuid()) @db.Uuid
+    nome    String
+    senha   String
+    email   String   @unique
+    timeId  Int
+    time    Time     @relation(fields: [timeId], references: [id])
+    tickets Ticket[]
+
+    @@map("admins")
+}
+
+model Servico {
+    id        Int      @id @default(autoincrement())
+    nome      String
+    descricao String?
+    timeId    Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    time      Time     @relation(fields: [timeId], references: [id])
+    tickets   Ticket[]
+
+    @@map("servicos")
+}
+
+model Time {
+    id        Int       @id @default(autoincrement())
+    nome      String
+    descricao String?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    servicos  Servico[]
+    admins    Admin[]
+
+    @@map("times")
+}
