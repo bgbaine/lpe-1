@@ -15,8 +15,30 @@ const timesSchema = z.object({
 
 router.get("/", async (req, res) => {
   try {
-    const times = await prisma.time.findMany();
+    const times = await prisma.time.findMany({
+      include: {
+        admins: true,
+        servicos: true,
+      },
+    });
     res.status(200).json(times);
+  } catch (error) {
+    res.status(500).json({ erro: error });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const time = await prisma.time.findFirst({
+      where: { id: Number(id) },
+      include: {
+        admins: true,
+        servicos: true,
+      },
+    });
+    res.status(200).json(time);
   } catch (error) {
     res.status(500).json({ erro: error });
   }
@@ -25,9 +47,8 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   const valida = timesSchema.safeParse(req.body);
 
-  if (!valida.success) {
+  if (!valida.success)
     return res.status(400).json({ erro: valida.error.format() });
-  }
 
   const { nome, descricao } = valida.data;
 
@@ -65,14 +86,12 @@ router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const timeId = Number(id);
 
-  if (isNaN(timeId)) {
+  if (isNaN(timeId))
     return res.status(400).json({ erro: "ID inválido" });
-  }
 
   const valida = timesSchema.safeParse(req.body);
-  if (!valida.success) {
+  if (!valida.success)
     return res.status(400).json({ erro: valida.error.format() });
-  }
 
   const { nome, descricao } = valida.data;
 
