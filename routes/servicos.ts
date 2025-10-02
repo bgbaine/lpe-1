@@ -11,6 +11,7 @@ const servicoSchema = z.object({
     message: "Nome do serviço deve ter no mínimo 2 caracteres",
   }),
   descricao: z.string().optional(),
+  imagem: z.string().optional(),
   timeId: z.number({
     required_error: "O ID do time é obrigatório",
     invalid_type_error: "O ID do time deve ser um número",
@@ -51,17 +52,17 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   const valida = servicoSchema.safeParse(req.body);
 
-  if (!valida.success) {
+  if (!valida.success)
     return res.status(400).json({ erro: valida.error.format() });
-  }
 
-  const { nome, descricao, timeId } = valida.data;
+  const { nome, descricao, imagem, timeId } = valida.data;
 
   try {
     const servico = await prisma.servico.create({
       data: {
         nome,
         descricao,
+        imagem,
         timeId,
       },
     });
@@ -92,16 +93,14 @@ router.put("/:id", async (req, res) => {
   const { id } = req.params;
 
   const parsedId = Number(id);
-  if (isNaN(parsedId)) {
+  if (isNaN(parsedId))
     return res.status(400).json({ erro: "ID inválido" });
-  }
 
   const valida = servicoSchema.safeParse(req.body);
-  if (!valida.success) {
+  if (!valida.success)
     return res.status(400).json({ erro: valida.error.format() });
-  }
 
-  const { nome, descricao, timeId } = valida.data;
+  const { nome, descricao, imagem, timeId } = valida.data;
 
   try {
     const servico = await prisma.servico.update({
@@ -109,6 +108,7 @@ router.put("/:id", async (req, res) => {
       data: {
         nome,
         descricao,
+        imagem,
         timeId,
       },
     });

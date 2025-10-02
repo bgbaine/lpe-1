@@ -31,49 +31,36 @@ router.get("/", async (req, res) => {
 function validaSenha(senha: string) {
   const mensa: string[] = [];
 
-  // .length: retorna o tamanho da string (da senha)
-  if (senha.length < 8) {
+  if (senha.length < 8)
     mensa.push("Erro... senha deve possuir, no mínimo, 8 caracteres");
-  }
 
-  // contadores
   let pequenas = 0;
   let grandes = 0;
   let numeros = 0;
   let simbolos = 0;
 
-  // senha = "abc123"
-  // letra = "a"
-
-  // percorre as letras da variável senha
   for (const letra of senha) {
-    // expressão regular
-    if (/[a-z]/.test(letra)) {
+    if (/[a-z]/.test(letra))
       pequenas++;
-    } else if (/[A-Z]/.test(letra)) {
+    else if (/[A-Z]/.test(letra))
       grandes++;
-    } else if (/[0-9]/.test(letra)) {
+    else if (/[0-9]/.test(letra))
       numeros++;
-    } else {
+    else
       simbolos++;
-    }
   }
 
-  if (pequenas == 0) {
+  if (pequenas == 0)
     mensa.push("Erro... senha deve possuir letra(s) minúscula(s)");
-  }
 
-  if (grandes == 0) {
+  if (grandes == 0)
     mensa.push("Erro... senha deve possuir letra(s) maiúscula(s)");
-  }
 
-  if (numeros == 0) {
+  if (numeros == 0)
     mensa.push("Erro... senha deve possuir número(s)");
-  }
 
-  if (simbolos == 0) {
+  if (simbolos == 0)
     mensa.push("Erro... senha deve possuir símbolo(s)");
-  }
 
   return mensa;
 }
@@ -82,16 +69,14 @@ function validaSenha(senha: string) {
 router.post("/", async (req, res) => {
   const valida = funcionarioSchema.safeParse(req.body);
 
-  if (!valida.success) {
+  if (!valida.success)
     return res.status(400).json({ erro: valida.error.format() });
-  }
 
   const { nome, email, senha, cargo } = valida.data;
 
   const erros = validaSenha(senha);
-  if (erros.length > 0) {
+  if (erros.length > 0)
     return res.status(400).json({ erro: erros.join("; ") });
-  }
 
   const salt = bcrypt.genSaltSync(12);
   const hash = bcrypt.hashSync(senha, salt);
