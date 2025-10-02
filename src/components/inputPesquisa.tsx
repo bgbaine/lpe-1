@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import type { CarroType } from "../utils/CarroType";
-import React from "react";
+import type { TicketType } from "../utils/TicketType";
 
 const apiUrl = import.meta.env.VITE_API_URL
 
@@ -10,30 +9,28 @@ type Inputs = {
 }
 
 type InputPesquisaProps = {
-    setCarros: React.Dispatch<React.SetStateAction<CarroType[]>>
+    setTickets: React.Dispatch<React.SetStateAction<TicketType[]>>
 }
 
-export function InputPesquisa({ setCarros }: InputPesquisaProps) {
+export function InputPesquisa({ setTickets }: InputPesquisaProps) {
     const { register, handleSubmit, reset } = useForm<Inputs>()
 
     async function enviaPesquisa(data: Inputs) {
-        // alert(data.termo)
         if (data.termo.length < 2) {
             toast.error("Informe, no mínimo, 2 caracteres")
             return
         }
 
-        const response = await fetch(`${apiUrl}/carros/pesquisa/${data.termo}`)
+        const response = await fetch(`${apiUrl}/tickets/pesquisa/${data.termo}`)
         const dados = await response.json()
-        // console.log(dados)
-        setCarros(dados)
+        setTickets(dados)
     }
 
     async function mostraDestaques() {
-        const response = await fetch(`${apiUrl}/carros`)
+        const response = await fetch(`${apiUrl}/tickets`)
         const dados = await response.json()
         reset({ termo: "" })
-        setCarros(dados)
+        setTickets(dados)
     }
 
     return (
@@ -47,7 +44,7 @@ export function InputPesquisa({ setCarros }: InputPesquisaProps) {
                         </svg>
                     </div>
                     <input type="search" id="default-search" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Informe modelo ou marca" required 
+                        placeholder="Informe descrição ou serviço" required 
                         {...register('termo')} />
                     <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         Pesquisar
@@ -56,7 +53,7 @@ export function InputPesquisa({ setCarros }: InputPesquisaProps) {
             </form>
             <button type="button" className="ms-3 mt-2 focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
                     onClick={mostraDestaques}>
-                Exibir Destaques
+                Exibir Todos
             </button>
         </div>
     )

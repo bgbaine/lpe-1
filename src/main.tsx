@@ -5,10 +5,11 @@ import './index.css'
 import App from './App.tsx'
 import Login from './Login.tsx'
 import Detalhes from './Detalhes.tsx'
+import MeusChamados from './MeusChamados.tsx'
+import Servico from './Servico.tsx'
 
 import Layout from './Layout.tsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import React from 'react'
 
 const rotas = createBrowserRouter([
   {
@@ -17,7 +18,9 @@ const rotas = createBrowserRouter([
     children: [
       { index: true, element: <App /> },
       { path: 'login', element: <Login /> },
-      { path: 'detalhes/:carroId', element: <Detalhes /> },
+      { path: 'detalhes/:ticketId', element: <Detalhes /> },
+      { path: 'meus-chamados', element: <MeusChamados /> },
+      { path: 'servico/:servicoId', element: <Servico /> },
     ],
   },
 ])
