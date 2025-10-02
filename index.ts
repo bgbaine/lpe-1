@@ -4,6 +4,7 @@ import cors from 'cors'
 import routesTimes from './routes/times'
 import routesServicos from './routes/servicos'
 import routesFuncionarios from './routes/funcionarios'
+import routesTickets from './routes/tickets'
 import routesLogin from './routes/login'
 
 const app = express()
@@ -15,6 +16,7 @@ app.use(cors())
 app.use("/times", routesTimes)
 app.use("/servicos", routesServicos)
 app.use("/funcionarios", routesFuncionarios)
+app.use("/tickets", routesTickets)
 app.use("/funcionarios/login", routesLogin)
 
 app.get('/', (req, res) => {
