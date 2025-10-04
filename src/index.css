@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Microsoft Azure Color Palette */
+  --azure-blue: #0078d4;
+  --azure-blue-dark: #106ebe;
+  --azure-blue-light: #40e0ff;
+  --azure-navy: #003d75;
+  --azure-teal: #00bcf2;
+  --azure-gray-50: #faf9f8;
+  --azure-gray-100: #f3f2f1;
+  --azure-gray-800: #323130;
+  --azure-gray-900: #201f1e;
+}
+
+html {
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  min-height: 100vh;
+}
