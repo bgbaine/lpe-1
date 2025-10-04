@@ -13,7 +13,7 @@ import AdminLayout from './admin/AdminLayout.tsx'
 import AdminLogin from './admin/AdminLogin.tsx'
 import AdminDashboard from './admin/AdminDashboard.tsx'
 import AdminTickets from './admin/AdminTickets.tsx'
-import AdminServicos from './admin/AdminServicos.tsx'
+import AdminServicos from './admin/AdminServico.tsx'
 import AdminNovoServico from './admin/AdminNovoServico.tsx'
 import AdminCadAdmin from './admin/AdminCadAdmin.tsx'
 

@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 
 interface AdminType {
+    ticketsCount: number
     id: string
     nome: string
     email: string
