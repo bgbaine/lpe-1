@@ -1,6 +1,7 @@
 import type { TimeType } from "./TimeType"
 
 export type ServicoType = {
+    tickets: any
     id: number
     nome: string
     descricao?: string

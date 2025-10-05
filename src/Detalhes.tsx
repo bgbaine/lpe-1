@@ -28,7 +28,7 @@ export default function Detalhes() {
       setTicket(dados)
     }
     buscaDados()
-  }, [])
+  }, [params.ticketId])
 
   const dataAbertura = ticket ? new Date(ticket.data_abertura).toLocaleDateString("pt-br") : ""
   const dataFechamento = ticket?.data_fechamento ? new Date(ticket.data_fechamento).toLocaleDateString("pt-br") : ""

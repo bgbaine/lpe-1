@@ -30,7 +30,7 @@ export default function AdminNovoServico() {
     }
     getTimes()
     setFocus("nome")
-  }, [])
+  }, [setFocus])
 
   const optionsTime = times.map(time => (
     <option key={time.id} value={time.id}>{time.nome}</option>

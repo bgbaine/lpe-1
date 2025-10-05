@@ -1,5 +1,5 @@
-import type { ServicoType } from "../utils/ServicoType"
-import { toast } from "sonner"
+import type { ServicoType } from "../../utils/ServicoType";
+import { toast } from "sonner";
 
 type ItemServicoProps = {
     servico: ServicoType
@@ -29,6 +29,7 @@ export default function ItemServico({ servico, servicos, setServicos }: ItemServ
                 toast.error("Erro ao excluir serviço")
             }
         } catch (error) {
+            console.error(error);
             toast.error("Erro ao excluir serviço")
         }
     }

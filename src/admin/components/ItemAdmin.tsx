@@ -1,4 +1,4 @@
-import type { AdminType } from "../utils/AdminType"
+import type { AdminType } from "../../utils/AdminType"
 import { toast } from "sonner"
 
 type ItemAdminProps = {

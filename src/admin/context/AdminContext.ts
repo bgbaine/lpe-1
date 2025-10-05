@@ -19,7 +19,8 @@ const adminVazio: AdminType = {
     id: '',
     nome: '',
     email: '',
-    nivel: 0
+    nivel: 0,
+    ticketsCount: 0
 }
 
 export const useAdminStore = create<AdminStore>((set) => ({

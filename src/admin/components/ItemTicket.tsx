@@ -1,4 +1,4 @@
-import type { TicketType } from "../utils/TicketType"
+import type { TicketType } from "../../utils/TicketType"
 import { toast } from "sonner"
 
 const coresPrioridade = {
@@ -46,7 +46,7 @@ export default function ItemTicket({ ticket, tickets, setTickets }: ItemTicketPr
             } else {
                 toast.error("Erro ao atualizar ticket")
             }
-        } catch (error) {
+        } catch {
             toast.error("Erro ao atualizar ticket")
         }
     }
@@ -76,7 +76,7 @@ export default function ItemTicket({ ticket, tickets, setTickets }: ItemTicketPr
                 } else {
                     toast.error("Erro ao enviar resposta")
                 }
-            } catch (error) {
+            } catch {
                 toast.error("Erro ao enviar resposta")
             }
         }

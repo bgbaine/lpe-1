@@ -40,8 +40,7 @@ export default function AdminLogin() {
             } else {
                 toast.error("Erro... Login ou senha incorretos")
             }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error) {
+        } catch {
             toast.error("Erro ao fazer login")
         }
     }
