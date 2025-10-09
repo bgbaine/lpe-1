@@ -16,6 +16,8 @@ import AdminTickets from './admin/AdminTickets.tsx'
 import AdminServicos from './admin/AdminServicos.tsx'
 import AdminNovoServico from './admin/AdminNovoServico.tsx'
 import AdminCadAdmin from './admin/AdminCadAdmin.tsx'
+import AdminNovoAdmin from './admin/AdminNovoAdmin.tsx'
+import AdminTicketDetalhes from './admin/AdminTicketDetalhes.tsx'
 
 import Layout from './Layout.tsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
@@ -39,7 +41,9 @@ const rotas = createBrowserRouter([
       { path: "tickets", element: <AdminTickets /> },
       { path: "servicos", element: <AdminServicos /> },
       { path: "novo-servico", element: <AdminNovoServico /> },
-      { path: "admins", element: <AdminCadAdmin /> },
+      { path: "administradores", element: <AdminCadAdmin /> },
+      { path: "novo-admin", element: <AdminNovoAdmin /> },
+      { path: "tickets/:ticketId", element: <AdminTicketDetalhes /> },
     ],
   },
   {

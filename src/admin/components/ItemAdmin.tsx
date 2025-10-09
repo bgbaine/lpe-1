@@ -49,7 +49,7 @@ export default function ItemAdmin({ adminLinha, admins, setAdmins }: ItemAdminPr
             </td>
             <td className="px-6 py-4">
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {adminLinha.time.nome}
+                    {adminLinha.time?.nome || 'Sem time'}
                 </span>
             </td>
             <td className="px-6 py-4">

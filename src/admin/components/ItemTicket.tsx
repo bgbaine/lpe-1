@@ -1,5 +1,6 @@
 import type { TicketType } from "../../utils/TicketType"
 import { toast } from "sonner"
+import { Link } from "react-router-dom"
 
 const coresPrioridade = {
     BAIXA: "bg-green-100 text-green-800 border-green-200",
@@ -51,37 +52,6 @@ export default function ItemTicket({ ticket, tickets, setTickets }: ItemTicketPr
         }
     }
 
-    async function responderTicket() {
-        const resposta = prompt("Digite a resposta para o ticket:")
-        if (resposta && resposta.trim()) {
-            try {
-                const response = await fetch(`${apiUrl}/tickets/${ticket.id}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        resposta: resposta.trim(),
-                        status: "FECHADO"
-                    })
-                })
-
-                if (response.ok) {
-                    const ticketAtualizado = await response.json()
-                    const ticketsAtualizados = tickets.map(t => 
-                        t.id === ticket.id ? ticketAtualizado : t
-                    )
-                    setTickets(ticketsAtualizados)
-                    toast.success("Resposta enviada com sucesso!")
-                } else {
-                    toast.error("Erro ao enviar resposta")
-                }
-            } catch {
-                toast.error("Erro ao enviar resposta")
-            }
-        }
-    }
-
     const dataAbertura = new Date(ticket.data_abertura).toLocaleDateString("pt-br")
     const dataFechamento = ticket.data_fechamento 
         ? new Date(ticket.data_fechamento).toLocaleDateString("pt-br")
@@ -122,41 +92,29 @@ export default function ItemTicket({ ticket, tickets, setTickets }: ItemTicketPr
             </td>
             <td className="px-6 py-4">
                 <div className="flex items-center space-x-2">
-                    {ticket.status !== 'FECHADO' && (
-                        <>
-                            <button
-                                onClick={() => atualizarStatus('EM_ATENDIMENTO')}
-                                className="text-blue-600 hover:text-blue-900 text-sm font-medium transition-colors duration-200"
-                                title="Colocar em atendimento"
-                            >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                </svg>
-                            </button>
-                            
-                            <button
-                                onClick={responderTicket}
-                                className="text-green-600 hover:text-green-900 text-sm font-medium transition-colors duration-200"
-                                title="Responder e fechar"
-                            >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </button>
-                        </>
+                    {ticket.status === 'ABERTO' && (
+                        <button
+                            onClick={() => atualizarStatus('EM_ATENDIMENTO')}
+                            className="text-blue-600 hover:text-blue-900 text-sm font-medium transition-colors duration-200"
+                            title="Colocar em atendimento"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                            </svg>
+                        </button>
                     )}
                     
-                    {ticket.resposta && (
-                        <button
-                            onClick={() => alert(`Resposta: ${ticket.resposta}`)}
+                    {(ticket.status === 'EM_ATENDIMENTO' || ticket.status === 'FECHADO') && (
+                        <Link
+                            to={`/admin/tickets/${ticket.id}`}
                             className="text-purple-600 hover:text-purple-900 text-sm font-medium transition-colors duration-200"
-                            title="Ver resposta"
+                            title={ticket.status === 'EM_ATENDIMENTO' ? 'Ver detalhes e responder' : 'Ver detalhes do ticket'}
                         >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                             </svg>
-                        </button>
+                        </Link>
                     )}
                 </div>
             </td>

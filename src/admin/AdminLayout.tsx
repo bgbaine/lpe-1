@@ -1,24 +1,72 @@
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAdminStore } from '../admin/context/AdminContext'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+
+const apiUrl = import.meta.env.VITE_API_URL
 
 export default function AdminLayout() {
-    const { admin, deslogaAdmin } = useAdminStore()
+    const { admin, deslogaAdmin, updateTicketsCount, carregaAdminSessao } = useAdminStore()
     const navigate = useNavigate()
     const location = useLocation()
+    const [isLoadingTickets, setIsLoadingTickets] = useState(false)
+    const [isLoadingSession, setIsLoadingSession] = useState(true)
+
+    // Carrega sessão do admin ao montar o componente
+    useEffect(() => {
+        async function loadSession() {
+            await carregaAdminSessao()
+            setIsLoadingSession(false)
+        }
+        loadSession()
+    }, [carregaAdminSessao])
 
     useEffect(() => {
         // Verifica se o admin está logado ao acessar rotas administrativas
-        if (!admin.id && location.pathname.startsWith('/admin') && location.pathname !== '/admin/login') {
+        // Só verifica depois que a sessão foi carregada
+        if (!isLoadingSession && !admin.id && location.pathname.startsWith('/admin') && location.pathname !== '/admin/login') {
             navigate('/admin/login')
         }
-    }, [admin.id, location.pathname, navigate])
+    }, [admin.id, location.pathname, navigate, isLoadingSession])
+
+    // Fetch tickets count when admin is logged in
+    useEffect(() => {
+        async function fetchTicketsCount() {
+            if (!admin.id) return
+
+            setIsLoadingTickets(true)
+            try {
+                const response = await fetch(`${apiUrl}/tickets`)
+                if (response.ok) {
+                    const tickets = await response.json()
+                    updateTicketsCount(tickets.length)
+                }
+            } catch (error) {
+                console.error('Erro ao buscar contagem de tickets:', error)
+            } finally {
+                setIsLoadingTickets(false)
+            }
+        }
+
+        fetchTicketsCount()
+    }, [admin.id, updateTicketsCount])
 
     function handleLogout() {
         deslogaAdmin()
         sessionStorage.removeItem("adminKey")
         localStorage.removeItem("adminKey")
         navigate("/admin/login")
+    }
+
+    // Mostra loading enquanto carrega a sessão
+    if (isLoadingSession) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Carregando...</p>
+                </div>
+            </div>
+        )
     }
 
     // Se não é admin e não está na página de login, não renderiza o layout
@@ -75,7 +123,14 @@ export default function AdminLayout() {
                                     </svg>
                                     Tickets
                                     <span className="ml-auto bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded-full">
-                                        {admin.ticketsCount || 0}
+                                        {isLoadingTickets ? (
+                                            <svg className="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                        ) : (
+                                            admin.ticketsCount || 0
+                                        )}
                                     </span>
                                 </Link>
                             </li>
@@ -97,9 +152,9 @@ export default function AdminLayout() {
                             </li>
                             <li>
                                 <Link 
-                                    to="/admin/admins" 
+                                    to="/admin/administradores" 
                                     className={`flex items-center px-4 py-3 rounded-lg transition-colors duration-200 ${
-                                        location.pathname === '/admin/admins' 
+                                        location.pathname === '/admin/administradores' 
                                             ? 'text-blue-700 bg-blue-50 border border-blue-200' 
                                             : 'text-gray-700 hover:bg-gray-100'
                                     }`}
@@ -172,7 +227,12 @@ function getPageTitle(pathname: string): string {
         '/admin/tickets': 'Gerenciamento de Tickets',
         '/admin/servicos': 'Gerenciamento de Serviços',
         '/admin/novo-servico': 'Cadastrar Novo Serviço',
-        '/admin/admins': 'Administradores do Sistema'
+        '/admin/administradores': 'Administradores do Sistema',
+        '/admin/novo-admin': 'Novo Administrador'
+    }
+    // Para rotas dinâmicas como /admin/tickets/:id
+    if (pathname.startsWith('/admin/tickets/') && pathname !== '/admin/tickets') {
+        return 'Detalhes do Ticket'
     }
     return titles[pathname] || 'Painel Administrativo'
 }
@@ -184,7 +244,12 @@ function getPageDescription(pathname: string): string {
         '/admin/tickets': 'Visualize e gerencie todos os tickets do sistema',
         '/admin/servicos': 'Gerencie os serviços disponíveis no sistema',
         '/admin/novo-servico': 'Adicione um novo serviço ao sistema HelpDesk',
-        '/admin/admins': 'Gerencie os administradores do sistema'
+        '/admin/administradores': 'Gerencie os administradores do sistema',
+        '/admin/novo-admin': 'Adicione um novo administrador ao sistema'
+    }
+    // Para rotas dinâmicas como /admin/tickets/:id
+    if (pathname.startsWith('/admin/tickets/') && pathname !== '/admin/tickets') {
+        return 'Visualize detalhes completos e responda ao ticket'
     }
     return descriptions[pathname] || 'Painel de controle administrativo'
 }
