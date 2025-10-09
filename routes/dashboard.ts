@@ -11,8 +11,9 @@ router.get("/gerais", async (req, res) => {
     const tickets = await prisma.ticket.count()
     const servicos = await prisma.servico.count()
     const times = await prisma.time.count()
+    const admins = await prisma.admin.count()
     
-    res.status(200).json({ funcionarios, tickets, servicos, times })
+    res.status(200).json({ funcionarios, tickets, servicos, times, admins })
   } catch (error) {
     res.status(400).json(error)
   }
